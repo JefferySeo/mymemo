@@ -1,41 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, StatusBar, FlatList } from "react-native";
+import {
+    StatusBar,
+    View,
+    StyleSheet,
+    Text,
+    Keyboard,
+    FlatList,
+    TouchableWithoutFeedback,
+    SafeAreaView
+} from 'react-native';
 import Note from '../components/Note';
+import NoteInputModal from '../components/NoteInputModal';
 import NotFound from '../components/NotFound';
 import RoundIconBtn from '../components/RoundIconBtn';
-import colors from "../misc/colors";
-import { useNotes } from "../contexts/NoteProvider";
-import NoteInputModal from '../components/NoteInputModal';
+
+import colors from '../misc/colors';
+import { useNotes } from '../context/NoteProvider'
 import SearchBar from '../components/SearchBar';
 
-const reverseData = (data) => {
-    return data.sort((a, b) => {
-        const aInt = parseInt(a.time);
-        const bInt = parseInt(b.time);
-        if(aInt < bInt) return 1;
-        if(aInt == bInt) return 0;
-        if(aInt > bInt) return -1;
+const reverseData = data => {
+    return data.sort((a, b)=> {
+       const aInt = parseInt(a.time);
+       const bInt = parseInt(b.time);
+       if(aInt < bInt) return 1;
+       if(aInt === bInt) return 0;
+       if(aInt > bInt) return -1;
     });
 }
 
-const NoteScreen = ({user, navigation}) => {
+const NoteScreen = ({ user, navigation }) => {
     const [greet, setGreet] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
     const [resultNotFound, setResultNotFound] = useState(false);
-    
-    const {notes, setNotes, findNotes} = useNotes();
+
+    const { notes, setNotes, findNotes } = useNotes();
 
     const findGreet = () => {
         const hrs = new Date().getHours();
         if(hrs === 0 || hrs < 12) return setGreet("오전");
-        if(hrs == 1 || hrs < 17) return setGreet("오후");
+        if(hrs === 1 || hrs < 17) return setGreet("오후");
         setGreet("밤");
     }
-    useEffect(() => {
+    useEffect(()=> {
         findGreet();
     }, []);
+   
     const reverseNotes = reverseData(notes);
 
     const handleOnSubmit = async(title, desc) => {
@@ -49,6 +60,11 @@ const NoteScreen = ({user, navigation}) => {
         navigation.navigate("NoteDetail", {note});
     }
 
+    const openNote = note => {
+        console.dir(note);
+        navigation.navigate('NoteDetail', {note});
+    }
+    
     const handleOnSearchInput = async text => {
         setSearchQuery(text);
         if(!text.trim()){
@@ -56,28 +72,26 @@ const NoteScreen = ({user, navigation}) => {
             setResultNotFound(false);
             return await findNotes();
         }
-    
 
         const filterNote = notes.filter( note => {
-            if(note.title.toLowerCase().includes(text.toLowerCase())){
-                return note;
-            }
+           if( note.title.toLowerCase().includes(text.toLowerCase())){
+              return note;
+           }
         });
 
         if(filterNote.length){
-            setNotes([...filterNote])
+            setNotes([...filterNote]);
         }else{
             setResultNotFound(true);
         }
-
-    };
+    }
 
     const handleOnClear = async () => {
         setSearchQuery('');
         setResultNotFound(false);
         await findNotes();
     }
-
+     
     return (
         <>
             <StatusBar barStyle="dark-content" backgroudColor={colors.LIGHT} />
@@ -138,7 +152,6 @@ const NoteScreen = ({user, navigation}) => {
         </>
     );
 };
-
 const styles = StyleSheet.create({
     greet:{
         fontSize: 16,
@@ -147,32 +160,31 @@ const styles = StyleSheet.create({
         color: colors.DARK
     },
     header: {
-        fontSize: 15,
-        fontWeight: "bold"
+       fontSize: 15,
+       fontWeight: 'bold'
     },
     container: {
-        paddingHorizontal: 20,
-        flex: 1,
-        zIndex: 1
+       paddingHorizontal: 20,
+       flex: 1,
+       zIndex: 1
     },
     emptyHeader: {
-        fontSize: 30,
-        textTransform: 'uppercase',
-        fontWeight: "bold",
-        opacity: 0.2
+       fontSize: 30,
+       textTransform: 'uppercase',
+       fontWeight : 'bold',
+       opacity: 0.2
     },
-    emptyHeaderContainer: {
+    emptyHeaderContainer : {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: -1
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: -1,
     },
-    addBtn: {
-        position: "absolute",
+    addBtn : {
+        position: 'absolute',
         right: 15,
-        bottom: 50,
-        zIndex: 1
+        bottom:50,
+        zIndex:1
     }
-});
-
+});   
 export default NoteScreen;
