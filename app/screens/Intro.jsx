@@ -12,10 +12,8 @@ import RoundIconBtn from '../components/RoundIconBtn';
 
 const Intro = ({onFinish}) => {
     const [name, setName] = useState("");
-    const handleOnChangeText = text => {
-        setName(text);
-        console.log(text)
-    }
+    const handleOnChangeText = text => (setName(text));
+    
     const handleSubmit = async () => {
         const user = { name: user };
         await AsyncStorage.setItem("user", JSON.stringify(user));

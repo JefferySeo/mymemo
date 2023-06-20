@@ -46,7 +46,7 @@ const NoteScreen = ({user, navigation}) => {
     };
 
     const openNote = (note) => {
-        navigation.navigate("");
+        navigation.navigate("NoteDetail", {note});
     }
 
     const handleOnSearchInput = async text => {
@@ -83,8 +83,8 @@ const NoteScreen = ({user, navigation}) => {
             <StatusBar barStyle="dark-content" backgroudColor={colors.LIGHT} />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
-                    <Text>
-                        {user.name}님이 {greet}에 쓰심.
+                    <Text style={styles.greet}>
+                        {user.name}님, {greet}입니다. 반갑습니다.
                     </Text>
                 {notes.length ? (
                     <SearchBar
@@ -140,6 +140,12 @@ const NoteScreen = ({user, navigation}) => {
 };
 
 const styles = StyleSheet.create({
+    greet:{
+        fontSize: 16,
+        fontWeight:'bold',
+        marginVertical: 15,
+        color: colors.DARK
+    },
     header: {
         fontSize: 15,
         fontWeight: "bold"
