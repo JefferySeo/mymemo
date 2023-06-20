@@ -1,6 +1,10 @@
-export default{
-    DARK : "#1E1E1E",
-    LIGHT: "#FFFFFF",
-    PRIMARY: "#DDB2FF",
-    ERROR: "#FF0000"
+export default {
+    DARK: '#1e1e1e' ,
+    LIGHT: '#ffffff',
+    PRIMARY: '#DDB2FF',
+    SECONDERY: '#FFB2D3',
+    TERTIARY: '#B2D6FF',
+    QUATERNARY: '#CEFFB2',
+    QUINARY: '#FCFFB2',
+    ERROR:'#FF0000'
 }
