@@ -48,16 +48,12 @@ const NoteScreen = ({ user, navigation }) => {
     }, []);
    
     const reverseNotes = reverseData(notes);
-
-    const handleOnSubmit = async(title, desc) => {
-        const note = {id: Date.now(), title, desc, time: Date.now()};
-        const updateNotes = [...notes, note];
-        setNotes(updateNotes);
-        await AsyncStorage.setItem("notes", JSON.stringify(updateNotes));
-    };
-
-    const openNote = (note) => {
-        navigation.navigate("NoteDetail", {note});
+   
+    const handleOnSubmit = async (title, desc) => {
+        const note = { id: Date.now(), title, desc, time: Date.now()};
+        const updatedNotes = [...notes, note];
+        setNotes(updatedNotes);
+        await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
     }
 
     const openNote = note => {
@@ -93,71 +89,74 @@ const NoteScreen = ({ user, navigation }) => {
     }
      
     return (
-        <>
-            <StatusBar barStyle="dark-content" backgroudColor={colors.LIGHT} />
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <Text style={styles.greet}>
-                        {user.name}님, {greet}입니다. 반갑습니다.
-                    </Text>
-                {notes.length ? (
-                    <SearchBar
-                        value={searchQuery}
-                        onChangeText={handleOnSearchInput}
-                        containerStyle={{marginVertical:15}}
-                        onClear={handleOnClear}
-                    />
-                ) : null
-                    
-                }
-                {resultNotFound ? (
-                    <NotFound />
-                ) : (
-                    <FlatList
-                    data={reverseNotes}
-                    numColumns={2}
-                    columnWrapperStyle={{
-                        justifyContent: "space-between",
-                        marginBottom: 15
-                    }}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({item}) => (
-                        <Note onPress={() => openNote(item)} item={item} />
-                        )}
-                        />
-                        )}
-                {
-                    !notes.length ? (
-                        <View
-                        style={[StyleSheet.absoluteFillObject, styles.emptyHeaderContainer]}
-                        >
-                            <Text style={styles.emptyHeader}>
-                                Add Notes
-                            </Text>
-                        </View>
-                    ) : null
-                }
-                </View>
-            </TouchableWithoutFeedback>
-            <RoundIconBtn 
-                antIconName="plus" 
-                style={styles.addBtn}
-                onPress={() => setModalVisible(true)}
-            />
-            <NoteInputModal 
-                visible={modalVisible} 
-                onClose={()=>setModalVisible(false)} 
-                onSubmit={handleOnSubmit}
-            />
-        </>
+        <SafeAreaView style={styles.container}>
+           <StatusBar barStyle="dark-content" backgroundColor={colors.LIGHT} />
+           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+               <View style={styles.container}>
+                  <Text style={styles.greet}>
+                    {user.name}님, {greet}입니다. 반갑습니다.  
+                  </Text> 
+               {notes.length ? (
+                  <SearchBar
+                     value={searchQuery}
+                     onChangeText={handleOnSearchInput}
+                     containerStyle={{marginVertical: 15}}
+                     onClear={handleOnClear}
+                  />   
+               ):null
+               }
+
+               {resultNotFound ? (
+                 <NotFound />
+               ): (
+                  <FlatList
+                      data={reverseNotes}
+                      numColumns={2}
+                      columnWrapperStyle={{
+                          justifyContent: 'space-between',
+                          marginBottom: 15
+                      }}
+                      keyExtractor = { (item) => item.id.toString()}
+                      renderItem = {({ item, index })=>(
+                        <Note onPress={() => openNote(item)} item={item} index={index} />
+                      )}
+                  />    
+               )}
+               {
+                 !notes.length ? (
+                    <View 
+                       style={[StyleSheet.absoluteFillObject, styles.emptyHeaderContainer]}
+                    >
+                        <Text style={styles.emptyHeader}>
+                            Add Notes
+                        </Text>
+                    </View>
+                 ) : null
+               }
+              </View>
+           </TouchableWithoutFeedback>
+           <RoundIconBtn
+               antIconName='plus'
+               style={styles.addBtn}
+               onPress = {()=>setModalVisible(true)}
+           /> 
+           <NoteInputModal
+               visible={modalVisible}
+               onClose={()=>setModalVisible(false)}
+               onSubmit = {handleOnSubmit}
+           />  
+        </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
-    greet:{
-        fontSize: 16,
+    container: {
+        flex: 1
+    },
+    greet : {
+        fontSize:16,
         fontWeight:'bold',
-        marginVertical: 15,
-        color: colors.DARK
+        marginVertical:15,
+        color:colors.DARK
     },
     header: {
        fontSize: 15,
